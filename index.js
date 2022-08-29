@@ -16,6 +16,7 @@ async function run() {
 
     try {
         const database = client.db("database").collection("productCollection");
+        const bookingDatabase = client.db("database").collection("bookingCollection");
 
         app.get('/product', async (req, res) => {
             const query = {};
@@ -37,10 +38,16 @@ async function run() {
             res.send(result);
         })
 
-        app.delete('/product/:id', async(req,res)=>{
+        app.delete('/product/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id:ObjectId(id)};
+            const query = { _id: ObjectId(id) };
             const result = await database.deleteOne(query);
+            res.send(result);
+        })
+
+        app.post('/booking/:id', async (req, res) => {
+            const booking = req.body;
+            const result = await bookingDatabase.insertOne(booking);
             res.send(result);
         })
 
