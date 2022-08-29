@@ -31,6 +31,12 @@ async function run() {
             res.send(result);
         })
 
+        app.post('/product', async (req, res) => {
+            const newUser = req.body;
+            const result = await database.insertOne(newUser);
+            res.send(result);
+        })
+
     }
 
     finally {
