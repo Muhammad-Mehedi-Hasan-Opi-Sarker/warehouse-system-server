@@ -17,6 +17,7 @@ async function run() {
     try {
         const database = client.db("database").collection("productCollection");
         const bookingDatabase = client.db("database").collection("bookingCollection");
+        const blogDatabase = client.db("database").collection("blog");
 
         app.get('/product', async (req, res) => {
             const query = {};
@@ -49,6 +50,28 @@ async function run() {
             const booking = req.body;
             const result = await bookingDatabase.insertOne(booking);
             res.send(result);
+        })
+
+        app.get('/booking', async (req, res) => {
+            const query = {};
+            const cursor = bookingDatabase.find(query);
+            const product = await cursor.toArray();
+            res.send(product)
+        })
+
+        app.get('/booking', async (req, res) => {
+            const email = req.query.email;
+            const query = { customerEamil: email };
+            const result = await bookingDatabase.find(query).toArray();
+            res.send(result);
+        })
+
+        // api for blog
+        app.get('/blog', async (req, res) => {
+            const query = {};
+            const cursor = blogDatabase.find(query);
+            const blog = await cursor.toArray();
+            res.send(blog);
         })
 
     }
