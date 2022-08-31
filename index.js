@@ -19,6 +19,12 @@ async function run() {
         const bookingDatabase = client.db("database").collection("bookingCollection");
         const blogDatabase = client.db("database").collection("blog");
 
+        app.post('/product', async (req, res) => {
+            const newUser = req.body;
+            const result = await database.insertOne(newUser);
+            res.send(result);
+        })
+
         app.get('/product', async (req, res) => {
             const query = {};
             const cursor = database.find(query)
@@ -33,19 +39,13 @@ async function run() {
             res.send(result);
         })
 
-        app.post('/product', async (req, res) => {
-            const newUser = req.body;
-            const result = await database.insertOne(newUser);
-            res.send(result);
-        })
-
         app.delete('/product/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const result = await database.deleteOne(query);
             res.send(result);
         })
-
+        // booking api 
         app.post('/booking/:id', async (req, res) => {
             const booking = req.body;
             const result = await bookingDatabase.insertOne(booking);
@@ -53,16 +53,16 @@ async function run() {
         })
 
         app.get('/booking', async (req, res) => {
-            const query = {};
-            const cursor = bookingDatabase.find(query);
-            const product = await cursor.toArray();
-            res.send(product)
+            const email = req.query.email;
+            const query = { email: email };
+            const result = await bookingDatabase.find(query).toArray();
+            res.send(result);
         })
 
-        app.get('/booking', async (req, res) => {
-            const email = req.query.email;
-            const query = { customerEamil: email };
-            const result = await bookingDatabase.find(query).toArray();
+        app.delete('/booking/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await bookingDatabase.deleteOne(query);
             res.send(result);
         })
 
@@ -73,7 +73,6 @@ async function run() {
             const blog = await cursor.toArray();
             res.send(blog);
         })
-
     }
 
     finally {
